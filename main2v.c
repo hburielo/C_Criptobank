@@ -32,13 +32,13 @@ void clearbuffer()
     }
 }
 
-// Função para salvar os usuários em um arquivo
+//============================= Função para salvar os usuários em um arquivo =============================//
 int salvarUsuarios()
 {
     FILE *arquivo = fopen(ARQUIVO_USUARIOS, "w");
     if (arquivo == NULL)
     {
-        printf("Erro ao abrir o arquivo para salvar os usuários.\n");
+        printf("Erro ao abrir o arquivo para salvar os usuarios.\n");
         return 0;
     }
 
@@ -64,7 +64,7 @@ int salvarUsuarios()
     return 0;
 }
 
-// Função para carregar os usuários de um arquivo
+//======================== Função para carregar os usuários de um arquivo //========================
 int carregarUsuarios()
 {
     FILE *arquivo = fopen(ARQUIVO_USUARIOS, "r");
@@ -103,13 +103,13 @@ int carregarUsuarios()
     return 0;
 }
 
-// Função de cadastro
+//============================= Função de cadastro //=============================
 int cadastro()
 {
     usuarios = realloc(usuarios, (num_usuarios + 1) * sizeof(Usuario));
     if (usuarios == NULL)
     {
-        printf("Erro ao alocar memória.\n");
+        printf("Erro ao alocar memoria.\n");
         exit(1);
     }
 
@@ -141,7 +141,7 @@ int cadastro()
     return 0;
 }
 
-// Função de login
+//============================= Função de login //=============================
 int login()
 {
     carregarUsuarios();
@@ -198,7 +198,7 @@ int login()
             exit(EXIT_SUCCESS);
             break;
         default:
-            printf("Opção inválida.\n");
+            printf("Opcao invalida.\n");
             break;
         }
     }
@@ -206,8 +206,10 @@ int login()
     return 0;
 }
 
-// Opções do Menu 🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻
+//============================= Opções do Menu 🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻🡻 //=============================
 
+
+//============================= SALDO //=============================
 int op_saldo()
 {
     carregarUsuarios();
@@ -220,6 +222,7 @@ int op_saldo()
     return 0;
 }
 
+//============================= EXTRATO //=============================
 int op_extrato()
 {
     carregarUsuarios();
@@ -235,6 +238,8 @@ int op_extrato()
     return 0;
 }
 
+//============================= DEPOSITO //=============================
+
 int op_deposito()
 {
 
@@ -246,12 +251,12 @@ int op_deposito()
     usuarios[usuario_log].saldoReal += reais;
 
     printf("Voce depositou R$ %.2lf!\n", reais);
-    printf("Seu novo saldo em reais é: R$ %.2lf\n", usuarios[usuario_log].saldoReal);
+    printf("Seu novo saldo em reais e: R$ %.2lf\n", usuarios[usuario_log].saldoReal);
 
     char lin_extrato[100]; 
 
     sprintf(lin_extrato, "/+ Deposito R$ %.2lf || Saldo: %.2lf", reais, usuarios[usuario_log].saldoReal);
-    
+
     if(strcmp(usuarios[usuario_log].extrato,"Nova conta sem transacoes até o momento.")== 0){
         strcpy(usuarios[usuario_log].extrato, lin_extrato);
     }
@@ -265,24 +270,40 @@ int op_deposito()
     return 0;
 };
 
+//============================= SAQUE //=============================
 int op_saque()
 {
     carregarUsuarios();
+    char ver_senha[TAM];
     double reais;
     puts("\n::::: Saque :::::\n");
+
+    do{
+        printf("Digite sua senha: ");
+        fgets(ver_senha,TAM, stdin);
+        ver_senha[strcspn(ver_senha,"\n" )] ='\0';
+
+        if(strcmp(usuarios[usuario_log].senha,ver_senha)!=0){
+            printf("Senha incorreta. Tente novamente.\n");
+        }
+     
+    } while (strcmp(usuarios[usuario_log].senha, ver_senha) != 0);
+ 
     printf("Informe quantos reais deseja sacar: ");
     scanf("%lf", &reais);
+
+    
     while (reais > usuarios[usuario_log].saldoReal)
     {
         printf("=> Saldo Insuficente\n");
         printf("Informe quantos reais deseja sacar: ");
         scanf("%lf", &reais);
-    }
+    }                                     
 
     usuarios[usuario_log].saldoReal -= reais;
 
     printf("Voce sacou R$ %.2lf!\n", reais);
-    printf("Seu novo saldo em reais é: R$ %.2lf\n", usuarios[usuario_log].saldoReal);
+    printf("Seu novo saldo em reais e: R$ %.2lf\n", usuarios[usuario_log].saldoReal);
 
     char lin_extrato[100]; 
     sprintf(lin_extrato, "/- Saque R$ %.2lf || Saldo: %.2lf", reais, usuarios[usuario_log].saldoReal);
@@ -294,18 +315,19 @@ int op_saque()
     return 0;
 };
 
+//============================= MENU //=============================
 int menu()
 {
     int selecao;
 
-    printf("\n::::: Selecione uma opção :::::\n");
+    printf("\n::::: Selecione uma opcao :::::\n");
     puts("1. Consultar Saldo");
     puts("2. Consultar Extrato");
     puts("3. Depositar Reais");
     puts("4. Saque de Reais");
     puts("5. Comprar Criptomoedas");
     puts("6. Vender Criptomoedas");
-    puts("7. Atualizar Cotação");
+    puts("7. Atualizar Cotacao");
     puts("0. Sair");
 
     printf("Eu desejo...");
@@ -336,6 +358,7 @@ int menu()
     return 0;
 }
 
+//============================= FUNÇÃO MAIN //=============================
 int main(void)
 {
     carregarUsuarios();
